@@ -57,7 +57,7 @@ const text = {
         ],
         lighter: [ "you use your lighter, if just for\na glimpse of what's around you" ],
         bloody_bedroom: [ "the stench of rotten flesh \npermeates the room" ],
-        knocking: "another knocking at the\ndoor...",
+        knocking: [ "another knocking at the\ndoor..." ],
         they_are_inside: [
             "they", 
             "are", 

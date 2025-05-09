@@ -1775,7 +1775,7 @@ class Apartment {
             /*21*/ { desc: null, action: () => {
                 if (Game.bloodscene.enabled) {
                     localStorage.setItem("blood", "true");
-                    window.location = "/cycle.html";
+                    window.location = getText("cycle_page");
                 }
             } },
             /*22*/ { desc: getText("goodbye"), col: "yellow", action: () => this.start_final = true }
