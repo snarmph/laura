@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>woman goes missing in the woods</title>
+        <script src="websockets.js"></script>
+        <meta charset="UTF-8">
+        <style>
+            @font-face {
+                font-family: "YoungSerif";
+                src: url("YoungSerif.ttf");
+            }
+
+            .redacted {
+                user-select: none;
+                background-color: black;
+                color: black;
+            }
+
+            .header {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 5em;
+                font-weight: bolder;
+                font-family: "YoungSerif", serif;
+            }
+
+            .date {
+                font-weight: bold;
+                margin-bottom: 15px;
+                font-family: "YoungSerif", serif;
+            }
+
+            hr {
+                border: none;
+                border-top: 3px solid black;
+                overflow: visible;
+                text-align: center;
+                height: 5px;
+            }
+
+            .top {
+                border-top: 3px double black;
+            }
+
+            .pic {
+                width: 300px;
+                height: 300px;
+                float: left;
+                padding-top: 20px;
+                padding-right: 20px;
+            }
+
+            .content-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .content {
+                width: 50%;
+                text-align: justify;
+            }
+
+            h1 {
+                font-family: "YoungSerif", serif;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="title">The North Borough Times</div>
+            <hr class="top">
+            <div class="date">Tuesday, November 12, 1996</div>
+            <hr>
+        </div>
+        <div class="content-container">
+            <div class="content">
+                <h1>SARAH <span class="redacted">Surname</span> REPORTED MISSING DURING HIKING TRIP</h1>
+                <h3>Authorities Investigate as Family Appeals for Public Assistance</h3>
+                <span>By <span class="redacted">Name</span> <span class="redacted">Surname</span>, Staff Reporter</span>
+                <br>
+                <img class="pic" src="sarah.jpg">
+                <p>Sarah <span class="redacted">Surname</span>, a local woman, has been reported missing following a weekend hiking trip with her daughter, Laura <span class="redacted">Surname</span>. The incident occurred overnight, with Laura telling investigators that her mother wandered off sometime during the night and failed to return.</p>
+
+                <p>Authorities have launched a search and rescue operation in the area and confirmed that an investigation is underway, including inquiries into the circumstances surrounding Sarah’s disappearance. Police have not ruled out the possibility of foul play and are currently examining all angles, including the involvement of her daughter.</p>
+
+                <p>Meanwhile, the rest of the <span class="redacted">Surname</span> family—including Sarah’s husband, John <span class="redacted">Surname</span>, and their four-year-old child, <span class="redacted">Name</span> <span class="redacted">Surname</span>, have made a public plea for any information that might help locate Sarah.</p>
+
+                <p>Anyone with relevant information is urged to contact local authorities immediately.</p>
+            </div>
+        </div>
+
+        <script>
+            let nodes = [];
+            let time = 20000;
+            let total_count = 0;
+            let current_count = 0;
+            let html = null;
+            
+            function lerp(v0, v1, alpha) {
+                return (1 - alpha) * v0 + alpha * v1;
+            }
+
+            function randomInt(max) {
+                return Math.floor(Math.random() * max);
+            }
+
+            function startDisappearing() {
+                if (nodes.length === 0) {
+                    setTimeout(() => {
+                        localStorage.setItem("missing", "true");
+                        window.location = "/laura";
+                    }, 2000)
+                    return;
+                }
+
+                const index = randomInt(nodes.length);
+                const node = nodes[index];
+                
+                if (node.changed >= node.words.length) {
+                    nodes[index] = nodes[nodes.length - 1];
+                    nodes.pop();
+                    startDisappearing();
+                    return;
+                }
+
+                let changed = false;
+                while (!changed) {
+                    const random_word = randomInt(node.words.length);
+                    if (node.words[random_word] === "laura") {
+                        continue;
+                    }
+                    changed = true;
+                    node.words[random_word] = "laura";
+                    node.changed++;
+                    current_count--;
+                    node.elem.nodeValue = node.words.join(" ");
+                }
+
+                const alpha = current_count / total_count;
+                const white = lerp(0, 255, alpha);
+                html.style.backgroundColor = `rgb(255, ${white}, ${white})`;
+
+                setTimeout(startDisappearing, time *= 0.4)
+            }
+
+            addEventListener("load", () => {
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    {
+                        acceptNode: function (node) {
+                            // Filter out empty or whitespace-only text nodes
+                            return /\S/.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                        }
+                    },
+                    false
+                );
+
+                let node;
+                while (node = walker.nextNode()) {
+                    const words = node.nodeValue.split(/\s+/);
+                    total_count += words.length;
+                    nodes.push({
+                        elem: node,
+                        words: words,
+                        changed: 0,
+                    });
+                }
+                current_count= total_count;
+                html = document.getElementsByTagName("html")[0];
+                setTimeout(startDisappearing, time)
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="jquery.js"></script>
+        <script src="common.js"></script>
+        <script src="audio.js"></script>
+        <script src="text.js"></script>
+        <script src="laura.js"></script>
+        <script src="websockets.js"></script>
+        <meta charset="UTF-8">
+        <style>
+            html, body {
+                margin: 0px;
+                padding: 0px;  
+                width: 100%;
+                height: 100%;
+
+                --black: black;
+                --white: white;
+                --light-gray: #aeaeae;
+                --gray: #808080;
+                --red: #ff0000;
+                --dark-red: #930000;
+                --very-dark-red: #4d0202;
+                --orange: orange;
+                --outer: #333333;
+
+                --green: green;
+                --blue: blue;
+                --yellow: yellow;
+                --purple: purple;
+
+                --player: #ffc974;
+                --laura: #ff00ff;
+            }
+
+            body {
+                font-family: monospace;
+                font-size: 2vw;
+                background-color: var(--black);
+                color: var(--white);
+            }
+
+            span {
+                position: relative;
+            }
+
+            .container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .content {
+                padding: 1lh 1ch 1lh 1ch;
+            }
+
+            .ascii {
+                white-space: preserve;
+            }
+
+            .border-title {
+                color: var(--white);
+                white-space: preserve;
+            }
+
+            .border-base {
+                color: var(--gray);
+                white-space: preserve;
+            }
+
+            #player, #laura, #monster, #letter {
+                position: absolute;
+                background-color: var(--black);
+            }
+
+            #player {
+                color: var(--player);
+                z-index: 2;
+            }
+
+            #laura {
+                display: hidden;
+                color: var(--laura);
+            }
+
+            #monster {
+                display: hidden;
+                color: var(--red);
+            }
+
+            #letter {
+                display: hidden;
+                color: var(--yellow);
+            }
+
+            #apartment {
+                position: relative;
+            }
+
+            #fade-curtain {
+                position: absolute;
+                top: 1lh;
+                left: 1ch;
+                width: 30ch;
+                height: 11lh;
+                background-color: black;
+                opacity: 0;
+                z-index: 999;
+            }
+
+            .content {
+                display: grid;
+                grid-template-columns: 32ch 38ch;
+                gap: 1ch;
+            }
+
+            .inner-tile {
+                display: inline-block;
+                white-space: preserve;
+                width: 1ch;
+                height: 1lh;
+            }
+
+            .left-space {
+                width: 32ch;
+                height: 13lh;
+            }
+
+            .right-space {
+                display: grid;
+                grid-template-rows: 9lh 4lh;
+                width: 38ch;
+                height: 13lh;
+            }
+
+            .hidden-download {
+                display: hidden;
+            }
+
+            #hidden-text {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                font-size: 20vh;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .hidden-text-line {
+                width: fit-content;
+                background-color: red;
+                height: 20vh;
+            }
+
+            .footer {
+                color: var(--gray);
+                font-size: medium;
+                position: absolute;
+                bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .footer-left {
+                margin-left: 10px;
+            }
+
+            .footer-right {
+                margin-right: 10px;
+                display: flex;
+            }
+
+            .clickable:hover {
+                cursor: pointer;
+                color: var(--light-gray);
+                text-decoration: underline;
+            }
+
+            .me {
+                color: var(--light-gray);
+                text-decoration: none;
+            }
+
+            #lang {
+                position: relative;
+                width: 6em;
+            }
+
+            #lang > ul {
+                max-height: 100%;
+                overflow: hidden;
+                transition: max-height 0.5s;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            #lang > ul:hover {
+                max-height: 350%;
+            }
+
+            #controls {
+                margin-right: 1.7em;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+                <div class="left-space">
+                    <div id="apartment">
+                        <div id="fade-curtain"></div>
+                    </div>
+                </div>
+                <div class="right-space">
+                    <!-- 18x09 -->
+                    <div id="extra"></div>
+                    <!-- 38x04 -->
+                    <div id="infobox"></div>
+                </div>
+            </div>
+        </div>
+        <a class="hidden-download" id="download-donotopen"></a>
+        <div id="hidden-text"></div>
+        <div class="footer">
+            <div class="footer-left">
+                <div class="credit">a game by 
+                    <a class="clickable me" target="_blank" href="https://alessandrobason.co.uk">snarmph</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div id="controls"></div>
+                <div class="clickable" id="sound-on">sound on</div>
+                <div id="lang">
+                    <ul>
+                        <li>language</li>
+                        <li class="clickable language" data-lang="en">english</li>
+                        <li class="clickable language" data-lang="it">italiano</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
